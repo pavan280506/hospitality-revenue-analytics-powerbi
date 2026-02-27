@@ -1,42 +1,53 @@
-# 🏨 Hotel Analytics & Revenue Optimization Dashboard
+# 🏨 Hotel Analytics & Revenue Optimization Platform
 
-A complete end-to-end Power BI analytics solution that transforms raw hotel booking data into actionable business insights for occupancy tracking, revenue optimization, guest segmentation, pricing strategy, and demand forecasting.
+An end-to-end Business Intelligence solution designed to transform hotel booking data into strategic insights for occupancy management, revenue optimization, guest segmentation, pricing strategy, and demand forecasting.
 
-This project demonstrates strong capabilities in data modeling, business intelligence, advanced DAX calculations, and predictive analytics using Power BI and Python (Prophet).
-
----
-
-# 📌 Project Overview
-
-The objective of this project is to design a scalable and performance-optimized hotel analytics ecosystem that enables:
-
-- Accurate Occupancy & Revenue monitoring  
-- Guest behavior and loyalty analysis  
-- Dynamic pricing optimization  
-- Upsell opportunity identification  
-- Future booking demand forecasting  
-
-The solution is structured into multiple analytical modules built on a clean star schema data model.
+This project demonstrates expertise in enterprise data modeling, KPI engineering, advanced DAX development, and predictive analytics using Power BI and Python (Prophet).
 
 ---
 
-# 🧱 Data Modeling – Star Schema Design
+# 1. Executive Overview
 
-## Data Architecture
+The objective of this initiative is to design a scalable and performance-optimized hotel analytics ecosystem that enables leadership teams and revenue managers to:
+
+- Monitor occupancy and revenue performance in real time  
+- Analyze guest behavior and loyalty trends  
+- Optimize pricing strategies dynamically  
+- Identify upsell and cross-sell opportunities  
+- Forecast future booking demand  
+
+The solution is structured into modular analytical components built on a robust star schema architecture.
+
+---
+
+# 2. Data Architecture & Modeling
+
+## 2.1 Star Schema Design
+
+The analytical model follows a clean star schema to ensure:
+
+- Accurate aggregations  
+- Optimized query performance  
+- Scalable extension across properties and geographies  
 
 ### Fact Table
-`Raw_Fact` – Booking-level transactional dataset containing revenue, ADR, cancellations, guest details, stay duration, and booking channel information.
+**Raw_Fact**  
+Booking-level transactional data including revenue, ADR, cancellations, stay duration, and booking channel information.
 
 ### Dimension Tables
-- `date-dimension`
-- `hotel-dimension`
-- `room-dimension`
-- `Customer-dimension`
+- Date_Dimension  
+- Hotel_Dimension  
+- Room_Dimension  
+- Customer_Dimension  
 
-## Data Preprocessing & Feature Engineering
+---
 
-- Created surrogate keys: `booking_id`, `hotel_id`, `room_id`, `customer_id`
-- Created derived columns:
+## 2.2 Data Engineering & Feature Creation
+
+Key transformations and enhancements:
+
+- Generated surrogate keys: `booking_id`, `hotel_id`, `room_id`, `customer_id`
+- Derived analytical columns:
   - `arrival_date`
   - `date_key`
   - `total_nights`
@@ -45,23 +56,22 @@ The solution is structured into multiple analytical modules built on a clean sta
   - `cost`
   - `discount`
   - `room_category`
-- Revenue set to 0 for canceled bookings
-- Meal plans mapped to cost values
-- Market segments mapped to discount rates
-- Room types grouped into logical categories
-- Removed high-null columns (e.g., Company)
-- Cleaned missing country values
-- Built one-to-many relationships in Model View
+- Revenue normalized to 0 for canceled bookings
+- Meal plans mapped to cost structures
+- Market segments mapped to discount logic
+- Room types categorized into logical tiers
+- High-null fields removed
+- Referential integrity validated via one-to-many relationships
 
-The star schema ensures optimized performance, correct aggregation, and scalable analytics.
+The model supports drilldowns, segmentation, and enterprise-grade reporting.
 
 ---
 
-# 📊 Occupancy & Revenue Analysis Module
+# 3. Occupancy & Revenue Performance Module
 
-This module evaluates hotel performance using industry-standard KPIs.
+This module evaluates hotel performance using hospitality industry-standard KPIs.
 
-## Core Measures
+## 3.1 Core Measures
 
 ### Total Revenue
 ```dax
@@ -69,7 +79,7 @@ Total Revenue =
 SUM(Raw_Fact[Revenue])
 ```
 
-### Total Bookings
+### Total Bookings (Confirmed)
 ```dax
 Total Bookings =
 CALCULATE(
@@ -79,13 +89,10 @@ CALCULATE(
 ```
 
 ### ADR (Average Daily Rate)
-
-Column ADR ≠ KPI ADR  
-Column ADR = rate per booking  
-KPI ADR = weighted average across occupied room nights  
+Weighted ADR based on occupied room nights:
 
 ```dax
-ADR (Avg Daily Rate) =
+ADR =
 DIVIDE(
     [Total Revenue],
     CALCULATE(
@@ -104,8 +111,8 @@ CALCULATE(
 )
 
 Available Room Nights =
-COUNTROWS('room-dimension') *
-COUNTROWS('date-dimension')
+COUNTROWS('Room_Dimension') *
+COUNTROWS('Date_Dimension')
 
 Occupancy % =
 DIVIDE(
@@ -123,19 +130,21 @@ DIVIDE(
 )
 ```
 
-## Business Value
-- Identify peak and low demand periods  
-- Compare Direct vs OTA performance  
-- Monitor pricing efficiency  
-- Evaluate cancellation impact  
+## 3.2 Analytical Insights
+
+- Peak vs off-peak demand identification  
+- Channel performance comparison (Direct vs OTA)  
+- Revenue impact of cancellations  
+- Seasonal occupancy patterns  
+- Pricing efficiency evaluation  
 
 ---
 
-# 👥 Guest Analysis Dashboard
+# 4. Guest Intelligence Module
 
-Focuses on guest demographics, booking behavior, and revenue contribution.
+Focused on behavioral segmentation and revenue contribution analysis.
 
-## Guest Type Classification
+## 4.1 Guest Classification Logic
 ```dax
 Guest Type =
 SWITCH(TRUE(),
@@ -147,18 +156,18 @@ SWITCH(TRUE(),
 )
 ```
 
-## Loyalty Segmentation
+## 4.2 Loyalty Segmentation
 ```dax
 Loyalty Segment =
 IF(
     Raw_Fact[is_repeated_guest] = 1 ||
     Raw_Fact[previous_bookings_not_canceled] > 0,
     "Loyal Guest",
-    "First-timer"
+    "First-time Guest"
 )
 ```
 
-## High Spender Identification
+## 4.3 High-Spender Identification
 ```dax
 High Spender Status =
 VAR RevenueThreshold =
@@ -175,62 +184,49 @@ IF(
 )
 ```
 
-## Insights Delivered
-- Revenue by country  
-- Booking channel distribution  
-- Stay duration by guest type  
-- VIP customer identification  
-- Cancellation behavior patterns  
+## 4.4 Business Applications
 
-Enables targeted marketing and loyalty optimization.
+- Revenue contribution by country and segment  
+- Booking source profitability  
+- VIP identification  
+- Loyalty-driven targeting strategies  
+- Cancellation behavior analysis  
 
 ---
 
-# 📈 Forecasting & Advanced Analytics
+# 5. Forecasting & Predictive Analytics
 
 Demand forecasting implemented using Python (Prophet) integrated with Power BI.
 
-## Forecasting Workflow
+## 5.1 Workflow
 
-1. Created Month-End Date column:
-```dax
-Month_End_Date =
-EOMONTH(Raw_Fact[arrival_date], 0)
-```
-
-2. Aggregated monthly bookings:
-```dax
-Monthly_Bookings =
-SUMMARIZE(
-    Raw_Fact,
-    Raw_Fact[Month_End_Date],
-    "Total_Bookings",
-    COUNT(Raw_Fact[booking_id])
-)
-```
-
-3. Exported aggregated dataset  
+1. Generated month-end aggregation key  
+2. Aggregated monthly booking counts  
+3. Exported data for model training  
 4. Trained Prophet model (24-month forecast horizon)  
-5. Reintegrated forecast results into Power BI  
+5. Reintegrated forecast output into dashboard  
 
-## Outputs
-- Actual vs Forecast comparison  
-- Confidence intervals  
-- Peak demand identification  
+## 5.2 Deliverables
 
-## Business Impact
+- Actual vs forecast comparison  
+- Confidence interval visualization  
+- Peak demand projection  
+- Seasonal trend extrapolation  
+
+## 5.3 Business Impact
+
 - Capacity planning  
-- Staffing optimization  
-- Promotional scheduling  
-- Long-term pricing strategy  
+- Workforce optimization  
+- Campaign scheduling  
+- Long-term pricing calibration  
 
 ---
 
-# 💰 Revenue Strategy Dashboard
+# 6. Revenue Strategy & Optimization Dashboard
 
-Focused on dynamic pricing and upsell revenue optimization.
+This module supports data-driven pricing and upsell optimization.
 
-## Estimated Upsell Revenue
+## 6.1 Upsell Revenue Estimation
 ```dax
 Estimated Upsell Revenue =
 VAR MealUpsell = [Meal Upsell Revenue]
@@ -243,11 +239,11 @@ RETURN
 MealUpsell + SpecialRequestsUpsell
 ```
 
-## Dynamic Pricing Model
+## 6.2 Dynamic Pricing Logic
 ```dax
 Optimal Price Point =
 VAR CurrentOccupancy = [Occupancy %]
-VAR CurrentADR = [ADR(Avg Daily Rate)]
+VAR CurrentADR = [ADR]
 VAR PriceAdjustment =
     SWITCH(TRUE(),
         CurrentOccupancy >= 85, 1.15,
@@ -260,46 +256,44 @@ RETURN
 CurrentADR * PriceAdjustment
 ```
 
-## Strategic Capabilities
-- Seasonal pricing recommendations  
-- Segment profitability comparison  
-- Discount effectiveness tracking  
-- Upsell opportunity analysis  
-- Year-over-Year revenue monitoring  
+## 6.3 Strategic Capabilities
+
+- Season-based pricing recommendations  
+- Segment profitability analysis  
+- Discount performance tracking  
+- Upsell opportunity quantification  
+- Year-over-Year growth monitoring  
 
 ---
 
-# 🛠 Technology Stack
+# 7. Technology Stack
 
 - Power BI Desktop  
-- Power Query Editor  
+- Power Query  
 - DAX (Data Analysis Expressions)  
 - Python  
-- Prophet (Time-Series Forecasting Library)  
-- CSV Integration  
+- Prophet (Time-Series Forecasting)  
+- CSV-based data integration  
 
 ---
 
-# 🚀 How to Use
+# 8. Business Value Delivered
 
-1. Open the `.pbix` file in Power BI Desktop  
-2. Click Refresh  
-3. Navigate via Home Page bookmarks  
-4. Apply filters (Hotel, Date, Market Segment, Season, Room Category)  
-5. Use drilldowns and slicers for detailed insights  
+This platform enables:
 
----
-
-# 🎯 Business Outcomes
-
-This solution enables:
-
-- Data-driven revenue optimization  
-- Accurate KPI tracking  
+- KPI-driven revenue management  
+- Operational performance monitoring  
+- Strategic pricing optimization  
 - Advanced guest segmentation  
-- Forecast-based strategic planning  
-- Improved operational efficiency  
+- Forecast-informed decision-making  
+- Scalable deployment across hotel chains  
 
 ---
 
-⭐ A complete hotel analytics ecosystem integrating data engineering, business intelligence, revenue strategy, and predictive forecasting within Power BI.
+# 9. Conclusion
+
+The Hotel Analytics & Revenue Optimization Platform integrates structured data modeling, business intelligence, and predictive forecasting into a unified decision-support system.
+
+It reflects enterprise-level BI implementation standards and demonstrates end-to-end capability in data engineering, analytical modeling, and strategic revenue intelligence.
+
+---
